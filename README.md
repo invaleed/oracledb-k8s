@@ -78,6 +78,5 @@ Restart service NFS Server
 
 ```bash
 $ sudo systemctl restart nfs-server
-exportfs -a
 ```
 Done
