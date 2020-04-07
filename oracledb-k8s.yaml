@@ -10,7 +10,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: __NFS_SERVER_IP_OR_HOSTNAME__
-    path: /var/nfsshare
+    path: __YOUR_NFS_PATH__
     readOnly: false
 
 ---
