@@ -1,7 +1,22 @@
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+spec:
+  capacity:
+    storage: 40Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: __NFS_SERVER_IP_OR_HOSTNAME__
+    path: /var/nfsshare
+    readOnly: false
+
+---
 kind: PersistentVolumeClaim
 metadata:
-  name: oracle-pvc
+  name: nfs-pvc
   labels:
     app: oracledb
 spec:
@@ -10,7 +25,7 @@ spec:
   resources:
     requests:
       storage: 30Gi
-  storageClassName: rook-ceph-block
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,11 +45,11 @@ spec:
         app: oracledb
     spec:
       containers:
-      - image: invaleed/oracledb:19.3.0-ee
+      - image: oracle/database:19.3.0-ee
         name: orcldb
         env :
         - name : ORACLE_SID
-          value : __CHANGEME__ 
+          value : __CHANGEME__
         - name : ORACLE_PDB
           value : __CHANGEME__        
         - name : ORACLE_PWD
@@ -44,6 +59,8 @@ spec:
         ports:
         - containerPort: 1521
           name: orcldb
+        - containerPort: 5500
+          name: em
         volumeMounts:
         - name: data
           mountPath: /opt/oracle/oradata
@@ -54,7 +71,8 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: oracle-pvc
+            claimName: nfs-pvc
+
 ---
 apiVersion: v1
 kind: Service
@@ -69,5 +87,9 @@ spec:
      protocol: TCP
      port: 1521
      nodePort: 31521
+   - name: em
+     protocol: TCP
+     port: 5500
+     nodePort: 31525
  selector:
    app: oracledb
