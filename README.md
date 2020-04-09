@@ -8,9 +8,10 @@ Clone repository
 
 ```bash
 $ git clone https://github.com/invaleed/oracledb-k8s.git
+$ cd oracledb-k8s
 ```
 
-Edit configuration file (.yml)
+Edit configuration file (.yaml)
 
 ```yml
 ...
