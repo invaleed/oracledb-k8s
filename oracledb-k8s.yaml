@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -14,6 +15,7 @@ spec:
     readOnly: false
 
 ---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nfs-pvc
